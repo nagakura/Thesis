@@ -1,92 +1,135 @@
-\chapter{本テンプレートの使い方}
-\label{chap:howto}
+\chapter{研究内容}
+\label{chap:contents}
 
-本章では、本テンプレートの具体的な使用方法を解説する。基本的には、{\tt main.tex} を上から順に修正していけばよいだけ。 
+本章では、本研究の内容を説明する。
 
+\section{システム概要}
 
-\section{テンプレートの構成}
+本システムはセンシングデータを個人でも簡単に利用できるようにすることが目的だ。
+そのためのフレームワークを作成し、センシングデータを可視化するという二つの軸をもってシステムを構成した。
 
-このテンプレートは、表\ref{tb:files}のファイルで構成されている。
+以下にシステムの構成を示す。大枠として、Linda\footnote{データをクラウド上で共有するためのフレームワーク。並列処理をしており、同時に多くのクライアントを処理できる。}からサーバーがデータを取得し、クライアントのリクエストに応じて送信する。クライアントでの情報は随時データベースに保存する。
 
 \begin{table}[htbp]
-  \caption{構成ファイル}
+  \caption{システム構成}
   \label{tb:files}
   \begin{center}\begin{tabular}{c|l}
     \hline
-    ファイル名&用途\\\hline\hline
-    {\tt main.tex}&メインのファイル。これを編集していく\\\hline
-    {\tt thesis.sty}&論文のスタイルを定義したファイル。基本的には手は加えない\\\hline
-    {\tt *.tex}&{\tt main.tex}に{\tt include}されるファイル群\\\hline
-    {\tt *.eps}&画像ファイル\\\hline
-    {\tt main.bib}&参考文献用のBibTeXファイル\\\hline
-    {\tt Makefile}&Makefile。次節以降で説明\\\hline
-    {\tt .gitignore}&Git用設定ファイル\\\hline
+    システム&概要\\\hline\hline
+    {\tt Linda}&データ元。データストリームからデータを取得する。\\\hline
+    {\tt サーバー}&Lindaからデータを取得し、クライアントからのリクエストが来たら送信する。\\\hline
+    {\tt クライアント}&サーバーにデータを要求し、ビジュアルプログラミングのビューを提供する。\\\hline
+    {\tt データベース}&サーバー、クライアントのデータを保存している。\\\hline
   \end{tabular}\end{center}
 \end{table}
 
-\section{コンパイル}
-このテンプレートの\LaTeX ファイルをコンパイルしてPDFファイルを生成するには、ターミナルを開いて以下のようにする。
+\section{データの可視化}
+センサーデータを二つの方法で可視化した。
 
-\begin{itembox}[l]{コマンド実行例}
-\begin{verbatim}
-% make
-\end{verbatim}
-\end{itembox}
+まず一つ目として点滅によるデータの受信だ。Lindaから送られてきたデータを受信するとブロックが青に変化し、元に戻る。(図\ref{fig:image01})
+センシングデータを監視してすぐにデータの受信に気付くことができるというメリットがある。\\
 
-こうすることで、\verb|platex|コマンド、\verb|pbibtex|コマンド、\verb|platex|コマンド2回、\verb|dvipdfmx|コマンドが全て実行され、{\tt main.pdf}が生成される。
-
-コンパイルによって生成されたファイルを全て消すには、以下のようにする。
-
-\begin{itembox}[l]{コマンド実行例}
-\begin{verbatim}
-% make clean
-\end{verbatim}
-\end{itembox}
-
-\section{設定}
-
-以下、{\tt main.tex}に対して行うべき設定を、このファイルの中に書いてある順に沿って説明する。
-
-\subsection{論文全体の言語の設定}
-\label{sec:lang}
-
-\begin{itembox}[l]{{\tt main.tex}}
-\begin{verbatim}
-\japanesetrue	% 論文全体を日本語で書く（英語で書くならコメントアウト）
-\end{verbatim}
-\end{itembox}
-
-ここでは論文全体の言語を設定する。日本語に設定すれば、『章』『目次』『謝辞』などが日本語で出力されて、行頭のインデントなども日本語の仕様になる。英語にした場合は、これらはそれぞれ『Chapter』『Table of Contents』『Acknowledgment』な体裁になる。インデントも行間も、英語用の設定が適用される。
-
-\verb|\japanesetrue| をコメントアウトしなければ日本語に、コメントアウトすれば英語に設定される。
+\begin{figure}[htbp]
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \fbox{\includegraphics[width=50mm]{image/image1-1.eps}}
+    \end{center}
+  \end{minipage}
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \fbox{\includegraphics[width=50mm]{image/image1-2.eps}}
+    \end{center}
+  \end{minipage}
+  \caption{点滅でのデータの通知}
+  \label{fig:image01}
+\end{figure}
 
 
-\subsection{余白の設定}
+そして二つ目として、実際の詳しいデータを見られるようにした。センサーオブジェクトに対してマウスオーバーしてフォーカスすることで実際の数字を表示できるようにした。(図\ref{fig:image02})
 
-\begin{itembox}[l]{{\tt main.tex}}
-\begin{verbatim}
-\bindermode	% バインダ用余白設定
-\end{verbatim}
-\end{itembox}
+\begin{figure}[htbp]
+    \begin{center}
+       \fbox{\includegraphics[width=100mm]{image/image02.eps}}
+    \end{center}
+    \caption{マウスオーバーによるデータの表示}
+    \label{fig:image02}
+\end{figure}
 
-このテンプレートの出力はA4用紙。ここではこれの四辺の余白を設定する。
+これら二つの実装により、センシングデータを閲覧する際に自分の欲しい粒度で取得することができるようになった。最低限の実装であれば詳しいデータが見られるだけでもいいが、抽象度を下げて色のみで表現することで閲覧する際の労力を下げることができる。
 
-最終的にバインダーで綴じて提出する場合、余白を左右対称にしてしまうと、見かけ上のバランスがとても悪くなる。これを解消するため、あらかじめ左側の余白を大きく取っておく。
+\section{ビジュアルプログラミング}
 
-\verb|\bindermode| をコメントアウトしなければ左綴じ用の余白に、コメントアウトすれば左右対称の余白に設定される。
+ビジュアルプログラミングを実装する際にブロック型のオブジェクトを作成した。以下にオブジェクトごとの解説をする。
 
-両面印刷の場合、偶数ページと奇数ページで余白を広くとるべき側が違うので、\verb|documentclass| でこれを設定する。
+\subsection{センサーオブジェクト}
 
-\begin{itembox}[l]{{\tt main.tex}}
-\begin{verbatim}
-% 両面印刷の場合。余白を綴じ側に作って右起こし。
-\documentclass[a4j,twoside,openright,11pt]{jreport}
-% 片面印刷の場合。
-%\documentclass[a4j,11pt]{jreport}
-\end{verbatim}
-\end{itembox}
+ビジュアルプログラミングをする際には一番最初にセンサーオブジェクトを用意する。このオブジェクトはLindaからのデータを受信し、クライアント側でイベントを作成しデータを受信したら送信するというハブになっている。
+また先に述べた通り、センサーデータが来るとこのブロックの点滅、あるいは能動的なデータの取得をすることが可能だ。
 
-両面印刷の場合は \verb|twoside| を使用する。\verb|openright| を使うと章のはじまりが必ず右側のページに来るようになる。
+\subsection{条件オブジェクト}
+
+センシングデータを扱うための条件オブジェクトを用意した。これにより上限下限、オンオフなどの条件分岐ができる。用意したオブジェクトを以下に列挙する。（図{\ref{fig:max}}〜図{\ref{fig:switch}）これらのオブジェクトもブロックとして表現し、条件にマッチするとセンシングデータと同じように点滅する。
+
+\begin{figure}[htbp]
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \fbox{\includegraphics[width=50mm]{image/max.eps}}
+    \end{center}
+    \caption{Max: 最大値を設定}
+    \label{fig:max}
+  \end{minipage}
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \fbox{\includegraphics[width=50mm]{image/min.eps}}
+    \end{center}
+    \caption{min: 最小値を設定}
+    \label{fig:min}
+  \end{minipage}
+\end{figure}
+
+\begin{figure}[htbp]
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \fbox{\includegraphics[width=50mm]{image/and.eps}}
+    \end{center}
+    \caption{and: 論理積を設定}
+    \label{fig:and}
+  \end{minipage}
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \fbox{\includegraphics[width=50mm]{image/or.eps}}
+    \end{center}
+    \caption{or: 論理和を設定}
+    \label{fig:or}
+  \end{minipage}
+\end{figure}
+
+\begin{figure}[htbp]
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \fbox{\includegraphics[width=50mm]{image/switch.eps}}
+    \end{center}
+    \caption{Switch: on/offを設定}
+    \label{fig:switch}
+  \end{minipage}
+\end{figure}
+
+\subsection{コネクションオブジェクト}
+
+条件オブジェクトと同じ場所にあるが、その中で特殊なオブジェクトがコネクションオブジェクトである。コネクションオブジェクトはブロック間に親子件関係を作成できるオブジェクトである。
+
+コネクションオブジェクトによって親のセンサーデータを条件オブジェクトの持つ自らの条件にかけ、次の世代に受け継ぐということが簡単にプログラムできるようになっている。
+
+例えばdelta/sensor/lightからのセンサーデータかiota/sensor/lightからのセンサーデータがそれぞれ最大値10（10以下）でない場合にsampleというオブジェクトに通知を送るというような設定が簡単にできる。(図{\ref{fig:image03})
+
+\begin{figure}[htbp]
+    \begin{center}
+       \fbox{\includegraphics[width=150mm]{image/image03.eps}}
+    \end{center}
+    \caption{実際にセンシングデータをプログラミングする例}
+    \label{fig:image03}
+\end{figure}
+
 
 \subsection{論文情報の設定}
 \label{sec:meta}
@@ -131,7 +174,7 @@
 
 出力部分の具体的な説明の前に、外部ファイルを読み込む方法を説明する。
 
-\verb|\begin{document}| から \verb|\end{document}| の間では、\verb|\include| コマンドを使うことで、別の {\tt *.tex} ファイルを読み込ませられる。 
+\verb|\begin{document}| から \verb|\end{document}| の間では、\verb|\include| コマンドを使うことで、別の {\tt *.tex} ファイルを読み込ませられる。
 
 \begin{itembox}[l]{{\tt include}しない場合}
 \begin{itembox}[l]{{\tt main.tex}}
@@ -338,7 +381,7 @@ BibTeXを使う場合は、以下のようにする。
 \begin{bib}[100]
 \begin{thebibliography}{#1}
 % \bibitem{参照用名称}
-%   著者名： 
+%   著者名：
 %   \newblock 文献名，
 %   \newblock 書誌情報，出版年．
 
